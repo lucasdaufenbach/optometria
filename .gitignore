@@ -9,6 +9,7 @@
 /build
 /dist
 next-env.d.ts
+*.tsbuildinfo
 
 # Ambiente
 .env
@@ -34,3 +35,5 @@ Thumbs.db
 
 # Cobertura de testes
 /coverage
+
+/src/generated/prisma

@@ -1,0 +1,165 @@
+// Schema do banco. Ver docs/04-modelo-de-dados.md para a intenção de cada entidade.
+// Convenções: id cuid; tabelas/colunas em snake_case (@map); camelCase no Prisma.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Quem acessa a área administrativa (e futuramente profissionais).
+model Usuario {
+  id           String   @id @default(cuid())
+  nome         String
+  email        String   @unique
+  senhaHash    String   @map("senha_hash")
+  papel        Papel    @default(ADMIN)
+  ativo        Boolean  @default(true)
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  consultas Consulta[]
+  bloqueios AgendaBloqueio[]
+  anotacoes Anotacao[]
+
+  @@map("usuarios")
+}
+
+enum Papel {
+  ADMIN
+  PROFISSIONAL
+
+  @@map("papel")
+}
+
+model Paciente {
+  id             String    @id @default(cuid())
+  nome           String
+  telefone       String
+  dataNascimento DateTime? @map("data_nascimento")
+  email          String?
+  observacoes    String?
+  criadoEm       DateTime  @default(now()) @map("criado_em")
+  atualizadoEm   DateTime  @updatedAt @map("atualizado_em")
+
+  consultas Consulta[]
+  anotacoes Anotacao[]
+  arquivos  Arquivo[]
+
+  @@index([telefone])
+  @@map("pacientes")
+}
+
+// Catálogo de tipos de consulta, com duração padrão.
+model TipoConsulta {
+  id             String  @id @default(cuid())
+  nome           String
+  duracaoMinutos Int     @map("duracao_minutos")
+  ativo          Boolean @default(true)
+
+  consultas Consulta[]
+
+  @@map("tipos_consulta")
+}
+
+model Consulta {
+  id             String         @id @default(cuid())
+  pacienteId     String         @map("paciente_id")
+  profissionalId String         @map("profissional_id")
+  tipoConsultaId String         @map("tipo_consulta_id")
+  inicio         DateTime       @map("data_hora_inicio")
+  fim            DateTime       @map("data_hora_fim")
+  status         StatusConsulta @default(AGENDADA)
+  origem         OrigemConsulta @default(ADMIN)
+  criadoEm       DateTime       @default(now()) @map("criado_em")
+  atualizadoEm   DateTime       @updatedAt @map("atualizado_em")
+
+  paciente     Paciente     @relation(fields: [pacienteId], references: [id])
+  profissional Usuario      @relation(fields: [profissionalId], references: [id])
+  tipoConsulta TipoConsulta @relation(fields: [tipoConsultaId], references: [id])
+  anotacoes    Anotacao[]
+  arquivos     Arquivo[]
+
+  @@index([profissionalId, inicio])
+  @@index([pacienteId])
+  @@map("consultas")
+}
+
+enum StatusConsulta {
+  AGENDADA
+  CONFIRMADA
+  REALIZADA
+  CANCELADA
+  FALTOU
+
+  @@map("status_consulta")
+}
+
+enum OrigemConsulta {
+  ADMIN
+  AUTOAGENDAMENTO
+
+  @@map("origem_consulta")
+}
+
+// Períodos indisponíveis (férias, almoço, folgas).
+model AgendaBloqueio {
+  id             String   @id @default(cuid())
+  profissionalId String   @map("profissional_id")
+  inicio         DateTime
+  fim            DateTime
+  motivo         String?
+
+  profissional Usuario @relation(fields: [profissionalId], references: [id])
+
+  @@index([profissionalId, inicio])
+  @@map("agenda_bloqueios")
+}
+
+// Histórico clínico / notas livres por paciente (opcionalmente por consulta).
+model Anotacao {
+  id         String   @id @default(cuid())
+  pacienteId String   @map("paciente_id")
+  consultaId String?  @map("consulta_id")
+  autorId    String   @map("autor_id")
+  texto      String
+  criadoEm   DateTime @default(now()) @map("criado_em")
+
+  paciente Paciente  @relation(fields: [pacienteId], references: [id])
+  consulta Consulta? @relation(fields: [consultaId], references: [id])
+  autor    Usuario   @relation(fields: [autorId], references: [id])
+
+  @@index([pacienteId])
+  @@map("anotacoes")
+}
+
+// Imagens e documentos (exames, fotos).
+model Arquivo {
+  id           String   @id @default(cuid())
+  pacienteId   String   @map("paciente_id")
+  consultaId   String?  @map("consulta_id")
+  nomeOriginal String   @map("nome_original")
+  chave        String // caminho local em dev, chave S3 em produção
+  tipoMime     String   @map("tipo_mime")
+  tamanho      Int
+  criadoEm     DateTime @default(now()) @map("criado_em")
+
+  paciente Paciente  @relation(fields: [pacienteId], references: [id])
+  consulta Consulta? @relation(fields: [consultaId], references: [id])
+
+  @@index([pacienteId])
+  @@map("arquivos")
+}
+
+// Configurações chave-valor da clínica (horário, regras de autoagendamento).
+model Configuracao {
+  id           String   @id @default(cuid())
+  chave        String   @unique
+  valor        String
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+
+  @@map("configuracoes")
+}

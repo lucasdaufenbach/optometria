@@ -42,9 +42,29 @@ O resto do sistema fala com a interface, nunca com um provedor específico.
 
 ## Dependências aprovadas até agora
 
-- next, react, react-dom
-- typescript, @types/*
-- tailwindcss
-- prisma, @prisma/client
+Instaladas na Sessão 1:
+
+- `next` (15.5.x), `react`, `react-dom`
+- `typescript`, `@types/node`, `@types/react`, `@types/react-dom`
+- `tailwindcss` (4.x) + `@tailwindcss/postcss`
+- `eslint`, `eslint-config-next`, `@eslint/eslintrc`
+
+Instaladas na Sessão 2:
+
+- `prisma`, `@prisma/client` (7.x)
+- `@prisma/adapter-pg` — driver adapter do Postgres. No Prisma 7 o adapter é o
+  mecanismo padrão de conexão; o `PrismaClient` exige um adapter.
+- `dotenv` (dev) — exigido pelo `prisma.config.ts` do Prisma 7 para carregar `.env`.
+- `tsx` (dev) — runner de TypeScript para scripts (seed e utilitários).
+
+Notas do Prisma 7 neste projeto:
+- Configuração em `prisma.config.ts` (não mais a chave `prisma` no package.json).
+- Client TypeScript gerado em `src/generated/prisma` (não versionado).
+- Cliente único exposto em `src/shared/db`.
 
 Qualquer adição além desta lista deve ser justificada aqui antes de instalar.
+
+> Nota de segurança: `npm audit` aponta 2 vulnerabilidades moderadas em um
+> `postcss` embutido dentro do próprio Next.js (build-time, não explorável em
+> runtime). Só serão resolvidas quando o Next atualizar seu bundle. Next já
+> está na versão de patch mais recente da linha 15.5.x.

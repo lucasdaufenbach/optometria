@@ -9,11 +9,13 @@ Ordem de prioridade: estrutura → estabilidade → clareza → documentação �
 ### Sessão 0 — Documentação e fundação (em andamento)
 Documento mestre traduzido em `docs/`. Definição de stack, arquitetura, modelo de dados e roadmap. Sem código de aplicação ainda.
 
-### Sessão 1 — Scaffold do projeto
-Projeto Next.js + TypeScript + Tailwind rodando. Estrutura `src/modules`, `src/shared`, `src/app`. `docker-compose.yml` do Postgres. Prisma configurado conectando no banco. Página inicial mínima. `git init`.
+### Sessão 1 — Scaffold do projeto ✅
+Projeto Next.js + TypeScript + Tailwind rodando. Estrutura `src/modules`, `src/shared`, `src/app` com áreas `(paciente)` e `(admin)`. `docker-compose.yml` do Postgres e `.env.example` prontos. Página inicial e placeholders. Build/typecheck/lint limpos.
+Pendência levada para a Sessão 2: instalar Docker e conectar o Prisma ao banco (Docker ainda não estava instalado nesta máquina).
 
-### Sessão 2 — Modelo de dados + migrations
-`schema.prisma` com as entidades da 1ª onda. Primeira migration aplicada. Seed mínimo (1 usuário admin, tipos de consulta). Cliente Prisma em `shared/db`.
+### Sessão 2 — Modelo de dados + migrations ⏳ (parcial)
+Prisma 7 instalado e configurado. `schema.prisma` completo com as entidades da 1ª onda (valida e gera client). Cliente único em `src/shared/db`. Script de seed (`prisma/seed.ts`) com tipos de consulta e configurações básicas. Scripts npm: `db:up`, `db:migrate`, `db:seed`, `db:studio`.
+**Pendente (requer Docker instalado):** subir o Postgres e rodar `npm run db:migrate` (primeira migration) + `npm run db:seed`. O **usuário admin** do seed foi adiado para a Sessão 3, pois depende do hash de senha.
 
 ### Sessão 3 — Autenticação administrativa
 Auth própria: hash de senha, login, sessão por cookie, logout, proteção da área `(admin)`. Tela de login.

@@ -10,6 +10,7 @@ Prioridades: A (alta), B (média), C (baixa).
 
 ## Itens
 
+- [A] Instalar Docker Desktop nesta máquina (necessário para o Postgres) — pré-requisito da Sessão 2.
 - [A] Definir algoritmo de hash de senha (bcrypt vs argon2) ao iniciar a Sessão 3.
 - [A] Definir estratégia de cookie de sessão (assinatura, expiração) na Sessão 3.
 - [B] Política de não-duplicação de paciente por telefone — confirmar com o optometrista.
