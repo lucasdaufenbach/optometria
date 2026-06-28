@@ -1,0 +1,477 @@
+# Sistema de Gestão para Clínica de Optometria
+
+> Documento mestre do projeto.
+>
+> Este documento define a filosofia, arquitetura, padrões de desenvolvimento e organização do projeto. Ele deve ser considerado a principal fonte de verdade durante todo o desenvolvimento.
+>
+> O objetivo não é construir apenas um MVP, mas um software completo, pronto para uso em produção, desenvolvido de forma incremental.
+
+---
+
+# Objetivo
+
+Desenvolver um sistema web para gestão completa de uma clínica de optometria, contemplando:
+
+- Autoagendamento de consultas.
+- Gestão completa de pacientes.
+- Histórico clínico.
+- Agenda inteligente.
+- Integração com WhatsApp.
+- Dashboard gerencial.
+- Cadastro de consultas.
+- Controle administrativo.
+
+O sistema deverá ser suficientemente simples para pacientes idosos utilizarem sem auxílio e suficientemente robusto para substituir planilhas e controles manuais utilizados pelo optometrista.
+
+---
+
+# Filosofia do Projeto
+
+Este projeto seguirá alguns princípios fundamentais.
+
+## Clareza acima de tudo
+
+Todo código deve ser fácil de entender.
+
+Uma pessoa nova deve conseguir compreender um módulo após poucos minutos de leitura.
+
+Não serão utilizadas arquiteturas complexas apenas porque são populares.
+
+Sempre que existir uma solução simples e uma solução sofisticada que resolvam o mesmo problema, a solução simples será escolhida.
+
+---
+
+## Código previsível
+
+O projeto deve manter sempre o mesmo padrão.
+
+Não serão misturados diversos estilos de desenvolvimento.
+
+O objetivo é que qualquer funcionalidade possa ser encontrada rapidamente.
+
+---
+
+## Poucas dependências
+
+Evitar instalar bibliotecas desnecessárias.
+
+Regra:
+
+> Se conseguimos implementar uma funcionalidade com poucas linhas de código próprio, não devemos instalar uma biblioteca apenas para isso.
+
+Bibliotecas somente quando realmente agregarem valor significativo.
+
+---
+
+## Facilidade de manutenção
+
+O sistema deverá ser fácil de evoluir pelos próximos anos.
+
+Novas funcionalidades deverão ser adicionadas sem necessidade de reescrever módulos existentes.
+
+---
+
+## Escalabilidade
+
+Embora inicialmente exista apenas um optometrista, o sistema deverá ser desenvolvido pensando em permitir futuramente:
+
+- múltiplos profissionais
+- múltiplas clínicas
+- múltiplas agendas
+
+Sem necessidade de reconstrução completa.
+
+---
+
+# Público do Sistema
+
+Existem dois perfis completamente diferentes de usuários.
+
+## Paciente
+
+Características:
+
+- normalmente acima de 50 anos
+- pouca familiaridade com tecnologia
+- utiliza principalmente celular
+- deseja apenas agendar uma consulta
+
+Consequências para o sistema:
+
+- poucas telas
+- poucos botões
+- fontes grandes
+- linguagem simples
+- fluxo extremamente curto
+
+---
+
+## Administrador (Optometrista)
+
+Características:
+
+- utiliza computador
+- acostumado com ERP
+- acostumado com Excel
+- gosta de tabelas
+- utiliza filtros constantemente
+
+Consequências:
+
+- grids
+- filtros
+- dashboards
+- atalhos
+- visão semanal
+- visão mensal
+
+---
+
+# Objetivo da Arquitetura
+
+A arquitetura deverá permitir:
+
+- leitura rápida
+- manutenção simples
+- baixo acoplamento
+- alta organização
+- crescimento gradual
+
+Não serão utilizadas arquiteturas excessivamente complexas.
+
+Não utilizar:
+
+- Clean Architecture completa
+- DDD completo
+- CQRS
+- Event Sourcing
+- Microservices
+
+O projeto deverá permanecer monolítico enquanto isso fizer sentido.
+
+---
+
+# Organização do Projeto
+
+A estrutura deverá seguir organização por domínio.
+
+Não organizar por tipo de arquivo.
+
+Exemplo ruim:
+
+components/
+
+hooks/
+
+services/
+
+pages/
+
+utils/
+
+Exemplo desejado:
+
+modules/
+
+agenda/
+
+pacientes/
+
+consultas/
+
+dashboard/
+
+configuracoes/
+
+Cada módulo será responsável por tudo relacionado ao seu domínio.
+
+Exemplo:
+
+modules/
+
+agenda/
+
+components/
+
+services/
+
+types/
+
+hooks/
+
+pages/
+
+utils/
+
+---
+
+# Estrutura da Documentação
+
+Toda documentação ficará dentro de:
+
+docs/
+
+Estrutura prevista:
+
+docs/
+
+00-visao-geral.md
+
+01-principios.md
+
+02-arquitetura.md
+
+03-stack.md
+
+04-modelo-de-dados.md
+
+05-regras-de-negocio.md
+
+06-fluxos.md
+
+07-ui-ux.md
+
+08-api.md
+
+09-roadmap.md
+
+10-backlog.md
+
+11-padroes-de-codigo.md
+
+12-testes.md
+
+13-futuras-funcionalidades.md
+
+CLAUDE.md
+
+---
+
+# Tecnologias
+
+Objetivo:
+
+Utilizar tecnologias estáveis, simples e populares.
+
+Stack inicial sugerida:
+
+Frontend
+
+- Next.js
+- TypeScript
+
+Estilos
+
+- Tailwind CSS
+
+Banco
+
+- PostgreSQL
+
+ORM
+
+- Prisma
+
+Autenticação
+
+- Auth.js ou solução própria simples
+
+Integração WhatsApp
+
+- Camada de abstração própria
+- Compatível com:
+    - WhatsApp Cloud API
+    - Evolution API
+    - Z-API
+
+Armazenamento
+
+- Compatível com S3
+- Desenvolvimento local inicialmente
+
+---
+
+# Filosofia da Interface
+
+Existirão praticamente duas aplicações.
+
+## Área do Paciente
+
+Prioridades:
+
+- mobile first
+- extremamente simples
+- poucos passos
+- poucos textos
+- poucos botões
+
+Evitar:
+
+- tabelas
+- menus complexos
+- configurações
+- excesso de informação
+
+---
+
+## Área Administrativa
+
+Prioridades:
+
+- produtividade
+- rapidez
+- visão geral
+- filtros
+- grids
+- atalhos
+
+Visual semelhante a um ERP.
+
+---
+
+# Filosofia do Código
+
+O código deverá obedecer algumas regras.
+
+Sempre:
+
+- funções pequenas
+- arquivos pequenos
+- componentes reutilizáveis
+- nomes claros
+- tipagem forte
+
+Evitar:
+
+- funções gigantes
+- componentes com centenas de linhas
+- duplicação
+- lógica espalhada
+
+---
+
+# Banco de Dados
+
+O banco deverá permanecer simples.
+
+Primeiras entidades previstas:
+
+usuarios
+
+pacientes
+
+consultas
+
+tipos_consulta
+
+agenda_bloqueios
+
+anotacoes
+
+arquivos
+
+configuracoes
+
+Novas tabelas somente quando realmente necessárias.
+
+---
+
+# Roadmap de Desenvolvimento
+
+O projeto NÃO será desenvolvido como MVP.
+
+Será desenvolvido em etapas pequenas.
+
+Cada etapa deverá durar aproximadamente uma sessão de desenvolvimento.
+
+Ao final de cada etapa:
+
+- projeto funcionando
+- sem erros
+- documentação atualizada
+- testes executados
+- commit realizado
+
+Nenhuma etapa poderá deixar o projeto quebrado.
+
+---
+
+# Organização das Sessões
+
+Cada sessão deverá possuir:
+
+Objetivo
+
+Escopo
+
+Checklist
+
+Critérios de aceite
+
+Testes
+
+Commit sugerido
+
+Próxima etapa
+
+---
+
+# Filosofia de Desenvolvimento
+
+Cada sessão deverá entregar algo utilizável.
+
+Nunca iniciar diversas funcionalidades ao mesmo tempo.
+
+Priorizar:
+
+1. estrutura
+2. estabilidade
+3. clareza
+4. documentação
+5. novas funcionalidades
+
+---
+
+# CLAUDE.md
+
+Será criado um arquivo específico para orientar a IA.
+
+Este documento conterá regras como:
+
+- Nunca alterar a arquitetura sem necessidade.
+- Nunca instalar bibliotecas sem justificativa.
+- Nunca duplicar código.
+- Sempre reutilizar componentes.
+- Sempre documentar alterações.
+- Nunca remover funcionalidades existentes.
+- Priorizar simplicidade.
+- Priorizar legibilidade.
+- Sempre manter compatibilidade entre desktop e mobile.
+- Sempre verificar se já existe implementação semelhante antes de criar outra.
+- Sempre finalizar uma sessão com o projeto compilando corretamente.
+- Evitar grandes refatorações durante uma única sessão.
+- Preferir funções pequenas.
+- Preferir arquivos pequenos.
+- Utilizar comentários apenas quando agregarem contexto.
+
+---
+
+# Objetivo Final
+
+Ao término do desenvolvimento, o sistema deverá possuir:
+
+- Gestão completa de pacientes.
+- Agenda completa.
+- Autoagendamento.
+- Histórico clínico.
+- Cadastro de consultas.
+- Upload de imagens.
+- Dashboard.
+- Integração com WhatsApp.
+- Mensagens automáticas.
+- Relatórios.
+- Configurações.
+- Interface simples para pacientes.
+- Interface produtiva para administradores.
+
+O resultado esperado é um software profissional, estável, de fácil manutenção e preparado para evoluir durante muitos anos sem necessidade de reestruturação significativa.
